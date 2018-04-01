@@ -25,7 +25,7 @@ At test time, we will then feed textureless images to the trained neural net in 
 ![](https://d2mxuefqeaa7sj.cloudfront.net/s_EC8A632A5A7918595C67F233EC67BB235C13597A531880ECA5FA4896F0896040_1522623965829_image.png)
 
 ## Goals and Deliverables
-## Quality Metrics
+### Quality Metrics
 
 Quantitative Image Processing Metrics
 
@@ -36,17 +36,17 @@ Qualitative Metrics
 
 - We will produce a google survey where a set of randomly selected images from our dataset will be stripped of their texture and have texture reapplied with our method. We will then ask respondents to rank the subjective quality of the images on a 5-point scale. 
 - If we reach our secondary goal, the same processes will be pursued with a randomly selected set of curated images from older video games and images rendered without textures.
-## Baseline Deliverables
+### Baseline Deliverables
 
 Acceptably reproduce textures on real images which have had their textures removed. Acceptability will be quantified by a combination of standard quantifiable metrics in image processing, SSIM and PSNR, and qualitative metrics, classmate submissions to a survey on the quality of images produced. 
 
-## Ideal Deliverables
+### Ideal Deliverables
 
 Acceptably apply textures to poorly textured images derived from old video games or renderings made without textures. As an exact ground-truth will not be present for these images, quality will be judged on qualitative metrics alone. 
 
 We’d also like to try a method of “painting” a texture onto the images as well, providing contextual 
 
-## Questions
+### Questions
 - Can believable textures be applied by neural nets to textureless images?
 - Can rendered images with poor textures be believably enhanced with neural nets? 
 ## Schedule
