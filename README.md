@@ -1,6 +1,5 @@
 <script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 # Applying Textures to Untextured Images Using Neural Networks
-Gabriel Gardner (25303083), Phillip Kuznetsov (26705083), Stefan Palombo (25248431)
 
 ## Summary
 
