@@ -10,8 +10,9 @@ the non-important edges in
 
 Producing textures for images is a labor intensive process that can take significant human time. Additionally, older source material, such as video games from antiquated hardware, lacks textural detail of the level modern systems contain. Finding a fast and effective way to automatically apply textures to untextured images could significantly reduce labor for projects that require handmade textures. Automatic texture generation is challenging due to the level of detail and consistency with the scene needed to produce believable and pleasing results.  We propose a method, as a final step in a graphics pipeline, for utilizing neural nets to generate textures on non-textured images. 
 
-![Source Image (“Untextured Rendering”, $$L_0$$ of Ground Truth)](https://d2mxuefqeaa7sj.cloudfront.net/s_8DD81CC4A167A6BC0747207D4F08D74E4063E97814787C9C3CF8C3FC912A5AC4_1522619922117_L0.jpeg)
-*TEST CAPTION*
+|![Source Image (“Untextured Rendering”, $$L_0$$ of Ground Truth)](https://d2mxuefqeaa7sj.cloudfront.net/s_8DD81CC4A167A6BC0747207D4F08D74E4063E97814787C9C3CF8C3FC912A5AC4_1522619922117_L0.jpeg)|
+|:--:| 
+| *Space* |
 ![Target Image (“Texture Image”, Ground Truth)](https://d2mxuefqeaa7sj.cloudfront.net/s_8DD81CC4A167A6BC0747207D4F08D74E4063E97814787C9C3CF8C3FC912A5AC4_1522619981475_Reg.jpeg)
 
 
