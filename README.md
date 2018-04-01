@@ -102,16 +102,14 @@ We’d also like to try a method of “painting” a texture onto the images as 
 - Computational Resources
   - 2 Nvidia 1080s on a home server
 - Datasets
-  - MIT-Adobe FiveK Dataset https://data.csail.mit.edu/graphics/fivek/
+  - MIT-Adobe FiveK Dataset [Link](https://data.csail.mit.edu/graphics/fivek/)
 - Software Resources
-  -  Fast Image Processing Code https://github.com/CQFIO/FastImageProcessing
+  -  Fast Image Processing Code [Link](https://github.com/CQFIO/FastImageProcessing)
 
 ### References:
-[1] Chen, Qifeng, Jia Xu, and Vladlen Koltun. "Fast image processing with fully-convolutional networks." *IEEE International Conference on Computer Vision*. Vol. 9. 2017. [http://openaccess.thecvf.com/content_iccv_2017/html/Chen_Fast_Image_Processing_ICCV_2017_paper.html]
+[1] Chen, Qifeng, Jia Xu, and Vladlen Koltun. "Fast image processing with fully-convolutional networks." *IEEE International Conference on Computer Vision*. Vol. 9. 2017. [Link](http://openaccess.thecvf.com/content_iccv_2017/html/Chen_Fast_Image_Processing_ICCV_2017_paper.html)
 
-[2] Fast Image Processing Code https://github.com/CQFIO/FastImageProcessing
+[2] Fast Image Processing Code [Link](https://github.com/CQFIO/FastImageProcessing)
 
-[3] MIT-Adobe FiveK Dataset https://data.csail.mit.edu/graphics/fivek/
-
-[4] Two Nvidia GeForce GTX 1080s
+[3] MIT-Adobe FiveK Dataset [Link](https://data.csail.mit.edu/graphics/fivek/)
 
