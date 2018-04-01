@@ -12,13 +12,17 @@ Producing textures for images is a labor intensive process that can take signifi
 
 |![Source Image (“Untextured Rendering”, $$L_0$$ of Ground Truth)](https://d2mxuefqeaa7sj.cloudfront.net/s_8DD81CC4A167A6BC0747207D4F08D74E4063E97814787C9C3CF8C3FC912A5AC4_1522619922117_L0.jpeg)|
 |:--:| 
-| *Space* |
-![Target Image (“Texture Image”, Ground Truth)](https://d2mxuefqeaa7sj.cloudfront.net/s_8DD81CC4A167A6BC0747207D4F08D74E4063E97814787C9C3CF8C3FC912A5AC4_1522619981475_Reg.jpeg)
+| *Source Image (“Untextured Rendering”, $$L_0$$ of Ground Truth)* |
+|![Target Image (“Texture Image”, Ground Truth)](https://d2mxuefqeaa7sj.cloudfront.net/s_8DD81CC4A167A6BC0747207D4F08D74E4063E97814787C9C3CF8C3FC912A5AC4_1522619981475_Reg.jpeg)|
+|:--:|
+| *Target Image (“Texture Image”, Ground Truth)* |
 
 
 To train the neural network, we need a dataset that contains texture-less images and ground-truth textured images. Generating this data from existing 3d models would be time-intensive and cost-prohibitive. However, we can make a pseudo-dataset by applying $$L_0$$ gradient minimization to real photographs and train the network to output the textured image. 
 
-![Normal Graphics Pipeline to our proposed graphics pipeline](https://d2mxuefqeaa7sj.cloudfront.net/s_EC8A632A5A7918595C67F233EC67BB235C13597A531880ECA5FA4896F0896040_1522622416920_diag.png)
+|![Normal Graphics Pipeline to our proposed graphics pipeline](https://d2mxuefqeaa7sj.cloudfront.net/s_EC8A632A5A7918595C67F233EC67BB235C13597A531880ECA5FA4896F0896040_1522622416920_diag.png)|
+|:--:|
+| *Normal Graphics Pipeline to our proposed graphics pipeline* |
 
 
 
