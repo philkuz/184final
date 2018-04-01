@@ -52,7 +52,7 @@ Acceptably reproduce textures on real images which have had their textures remov
 
 Acceptably apply textures to poorly textured images derived from old video games or renderings made without textures. As an exact ground-truth will not be present for these images, quality will be judged on qualitative metrics alone. 
 
-We’d also like to try a method of “painting” a texture onto the images as well, providing contextual 
+We’d also like to try a method of “painting” a texture onto the images as well, providing contextual clues what kind of texture should be in the rest of the image. This would require a slight change to the data generation code that might be possible to do if we get ahead of schedule.
 
 ### Questions
 - Can believable textures be applied by neural nets to textureless images?
