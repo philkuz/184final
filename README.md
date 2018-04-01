@@ -43,6 +43,7 @@ Qualitative Metrics
 
 - We will produce a google survey where a set of randomly selected images from our dataset will be stripped of their texture and have texture reapplied with our method. We will then ask respondents to rank the subjective quality of the images on a 5-point scale. 
 - If we reach our secondary goal, the same processes will be pursued with a randomly selected set of curated images from older video games and images rendered without textures.
+
 ### Baseline Deliverables
 
 Acceptably reproduce textures on real images which have had their textures removed. Acceptability will be quantified by a combination of standard quantifiable metrics in image processing, SSIM and PSNR, and qualitative metrics, classmate submissions to a survey on the quality of images produced. 
@@ -56,6 +57,7 @@ We’d also like to try a method of “painting” a texture onto the images as 
 ### Questions
 - Can believable textures be applied by neural nets to textureless images?
 - Can rendered images with poor textures be believably enhanced with neural nets? 
+
 ## Schedule
 
 **April 2-8**
@@ -95,6 +97,7 @@ We’d also like to try a method of “painting” a texture onto the images as 
 - Final Website
   - Abstract of project
   - Final results
+  
 ## Resources
 - Computational Resources
   - 2 Nvidia 1080s on a home server
@@ -103,7 +106,7 @@ We’d also like to try a method of “painting” a texture onto the images as 
 - Software Resources
   -  Fast Image Processing Code https://github.com/CQFIO/FastImageProcessing
 
-References:
+### References:
 [1] Chen, Qifeng, Jia Xu, and Vladlen Koltun. "Fast image processing with fully-convolutional networks." *IEEE International Conference on Computer Vision*. Vol. 9. 2017. [http://openaccess.thecvf.com/content_iccv_2017/html/Chen_Fast_Image_Processing_ICCV_2017_paper.html]
 
 [2] Fast Image Processing Code https://github.com/CQFIO/FastImageProcessing
