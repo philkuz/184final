@@ -111,5 +111,7 @@ We’d also like to try a method of “painting” a texture onto the images as 
 [2] Fast Image Processing Code [Link](https://github.com/CQFIO/FastImageProcessing)
 
 [3] MIT-Adobe FiveK Dataset [Link](https://data.csail.mit.edu/graphics/fivek/)
+
 [4] Xu, Li, et al. "Image smoothing via L 0 gradient minimization." ACM Transactions on Graphics (TOG). Vol. 30. No. 6. ACM, 2011. [Link](https://dl.acm.org/citation.cfm?id=2024208)
+
 [5] Nguyen, Rang MH, and Michael S. Brown. "Fast and effective L0 gradient minimization by region fusion." Proceedings of the IEEE International Conference on Computer Vision. 2015. [Link](https://www.cv-foundation.org/openaccess/content_iccv_2015/papers/Nguyen_Fast_and_Effective_ICCV_2015_paper.pdf)
