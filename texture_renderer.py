@@ -128,5 +128,5 @@ for filename in glob.iglob('textures/*.png'):
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
     draw_cube(lines=False)
-    pygame.image.save(screen, "screenshot" + str(i) +  ".png")
+    pygame.image.save(screen, "output/" + str(i) +  ".png")
     i += 1
