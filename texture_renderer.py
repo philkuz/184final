@@ -1,34 +1,23 @@
 import pygame
 import sys
 import glob
+import numpy as np
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
 vertices = (
     # x  y  z
-    (1, -1, -1),
-    (1, 1, -1),
-    (-1, 1, -1),
-    (-1, -1, -1),
-    (1, -1, 1),
-    (1, 1, 1),
-    (-1, -1, 1),
-    (-1, 1, 1)
+    (1.0, -1.0, -1.0),
+    (1.0, 1.0, -1.0),
+    (-1.0, 1.0, -1.0),
+    (-1.0, -1.0, -1.0),
 )
 
 edges = (
     (0, 1),
     (0, 3),
-    (0, 4),
     (2, 1),
     (2, 3),
-    (2, 7),
-    (6, 3),
-    (6, 4),
-    (6, 7),
-    (5, 1),
-    (5, 4),
-    (5, 7)
 )
 
 
@@ -63,54 +52,59 @@ def draw_cube(lines=False):
         glEnd()
     else:
         glBegin(GL_QUADS)
+        test_coord = np.array
+
         glTexCoord2f(0.0, 0.0)
-        glVertex3f(-1.0, -1.0,  1.0)
+        glVertex3f(-1.0, -1.0, 5.0)
         glTexCoord2f(1.0, 0.0)
-        glVertex3f(1.0, -1.0,  1.0)
+        glVertex3f(1.0, -1.0, 5.0)
         glTexCoord2f(1.0, 1.0)
-        glVertex3f(1.0,  1.0,  1.0)
+        glVertex3f(1.0, 1.0, 1.0)
         glTexCoord2f(0.0, 1.0)
-        glVertex3f(-1.0,  1.0,  1.0)
-        glTexCoord2f(1.0, 0.0)
-        glVertex3f(-1.0, -1.0, -1.0)
-        glTexCoord2f(1.0, 1.0)
-        glVertex3f(-1.0,  1.0, -1.0)
-        glTexCoord2f(0.0, 1.0)
-        glVertex3f(1.0,  1.0, -1.0)
-        glTexCoord2f(0.0, 0.0)
-        glVertex3f(1.0, -1.0, -1.0)
-        glTexCoord2f(0.0, 1.0)
-        glVertex3f(-1.0,  1.0, -1.0)
-        glTexCoord2f(0.0, 0.0)
-        glVertex3f(-1.0,  1.0,  1.0)
-        glTexCoord2f(1.0, 0.0)
-        glVertex3f(1.0,  1.0,  1.0)
-        glTexCoord2f(1.0, 1.0)
-        glVertex3f(1.0,  1.0, -1.0)
-        glTexCoord2f(1.0, 1.0)
-        glVertex3f(-1.0, -1.0, -1.0)
-        glTexCoord2f(0.0, 1.0)
-        glVertex3f(1.0, -1.0, -1.0)
-        glTexCoord2f(0.0, 0.0)
-        glVertex3f(1.0, -1.0,  1.0)
-        glTexCoord2f(1.0, 0.0)
-        glVertex3f(-1.0, -1.0,  1.0)
-        glTexCoord2f(1.0, 0.0)
-        glVertex3f(1.0, -1.0, -1.0)
-        glTexCoord2f(1.0, 1.0)
-        glVertex3f(1.0,  1.0, -1.0)
-        glTexCoord2f(0.0, 1.0)
-        glVertex3f(1.0,  1.0,  1.0)
-        glTexCoord2f(0.0, 0.0)
-        glVertex3f(1.0, -1.0,  1.0)
-        glTexCoord2f(0.0, 0.0)
-        glVertex3f(-1.0, -1.0, -1.0)
-        glTexCoord2f(1.0, 0.0)
-        glVertex3f(-1.0, -1.0,  1.0)
-        glTexCoord2f(1.0, 1.0)
-        glVertex3f(-1.0,  1.0,  1.0)
-        glTexCoord2f(0.0, 1.0)
-        glVertex3f(-1.0,  1.0, -1.0)
+        glVertex3f(-1.0, 1.0, 1.0)
+
+
+
+        # glTexCoord2f(1.0, 0.0)
+        # glVertex3f(-1.0, -1.0, -1.0)
+        # glTexCoord2f(1.0, 1.0)
+        # glVertex3f(-1.0, 1.0, -1.0)
+        # glTexCoord2f(0.0, 1.0)
+        # glVertex3f(1.0, 1.0, -1.0)
+        # glTexCoord2f(0.0, 0.0)
+        # glVertex3f(1.0, -1.0, -1.0)
+        # glTexCoord2f(0.0, 1.0)
+        # glVertex3f(-1.0, 1.0, -1.0)
+        # glTexCoord2f(0.0, 0.0)
+        # glVertex3f(-1.0, 1.0, 1.0)
+        # glTexCoord2f(1.0, 0.0)
+        # glVertex3f(1.0, 1.0, 1.0)
+        # glTexCoord2f(1.0, 1.0)
+        # glVertex3f(1.0, 1.0, -1.0)
+        # glTexCoord2f(1.0, 1.0)
+        # glVertex3f(-1.0, -1.0, -1.0)
+        # glTexCoord2f(0.0, 1.0)
+        # glVertex3f(1.0, -1.0, -1.0)
+        # glTexCoord2f(0.0, 0.0)
+        # glVertex3f(1.0, -1.0, 1.0)
+        # glTexCoord2f(1.0, 0.0)
+        # glVertex3f(-1.0, -1.0, 1.0)
+        # glTexCoord2f(1.0, 0.0)
+        # glVertex3f(1.0, -1.0, -1.0)
+        # glTexCoord2f(1.0, 1.0)
+        # glVertex3f(1.0, 1.0, -1.0)
+        # glTexCoord2f(0.0, 1.0)
+        # glVertex3f(1.0, 1.0, 1.0)
+        # glTexCoord2f(0.0, 0.0)
+        # glVertex3f(1.0, -1.0, 1.0)
+        # glTexCoord2f(0.0, 0.0)
+        # glVertex3f(-1.0, -1.0, -1.0)
+        # glTexCoord2f(1.0, 0.0)
+        # glVertex3f(-1.0, -1.0, 1.0)
+        # glTexCoord2f(1.0, 1.0)
+        # glVertex3f(-1.0, 1.0, 1.0)
+        # glTexCoord2f(0.0, 1.0)
+        # glVertex3f(-1.0, 1.0, -1.0)
         glEnd()
 
 #pygame.init()
@@ -128,5 +122,5 @@ for filename in glob.iglob('textures/*.png'):
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
     draw_cube(lines=False)
-    pygame.image.save(screen, "screenshot" + str(i) +  ".png")
+    pygame.image.save(screen, "output/" + str(i) +  ".png")
     i += 1
