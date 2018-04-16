@@ -1,3 +1,4 @@
+''' TODO make this work with the data directory '''
 import os
 import glob
 

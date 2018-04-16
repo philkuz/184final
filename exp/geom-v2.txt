@@ -1,0 +1,11 @@
+{
+    "is_training": true,
+    "load_checkpoint": false,
+    "logs_path": "logs/geometry-v2",
+    "lr": 0.0001,
+    "num_epochs": 180,
+    "resize_size": [600, 800],
+    "initializer": "normal",
+    "test_file": "data/geometry-v2/test-v2.txt",
+    "train_file": "data/geometry-v2/train-v2.txt"
+}
