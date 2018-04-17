@@ -5,5 +5,5 @@ python convert_dng.py
 ```
 # texture dataset
 ```
-bash download_geom.sh
+bash download_files.sh
 ```
