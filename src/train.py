@@ -106,13 +106,13 @@ def get_loss(loss_type):
       raise ValueError("'{}' not implemented as a loss".format(loss_type))
     return loss
 
-loss = get_loss('mse')(network,output)
+objective_loss = loss = get_loss('mse')(network,output)
 if params['use_style']:
   import neural_style as ns
   net_output = ns.build_vgg(ns.vgg_demean(network))
   net_style = ns.build_vgg(ns.vgg_demean(output))
   style_loss = ns.style_loss_arb(sess, net_output, net_style)
-  loss += params['style_weight'] * style_loss
+  loss = loss + params['style_weight'] * style_loss
 global_step = tf.get_variable(
     'global_step', [], trainable = False,
     initializer = tf.constant_initializer(0), dtype = tf.int64)
@@ -249,9 +249,10 @@ def apply_texture_queue(input_image, output_image, texture_queue_type):
 
 
 if params['is_training']:
-    tf.summary.scalar('loss', loss, collections=['train'])
     if params['use_style']:
       tf.summary.scalar('style_loss', style_loss, collections=['train'])
+      tf.summary.scalar('objective_loss', objective_loss, collections=['train'])
+    tf.summary.scalar('loss', loss, collections=['train'])
     train_summary_op = tf.summary.merge_all('train')
     all_losses=np.zeros(len(input_files), dtype=float)
     print(len(input_files))
