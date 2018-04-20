@@ -4,7 +4,8 @@ from utils import *
 import argparse
 def setup_argparse():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--params')
+    parser.add_argument('params')
+    parser.add_argument('--debug')
     return parser.parse_args()
 def default_params(params):
     def set_default(name, value):
@@ -23,6 +24,11 @@ def default_params(params):
     set_default('resize_size', (600, 800))
     set_default('initializer', 'identity')
     set_default('continue_checkpoint', None)
+    set_default('gpu_number', None)
+    set_default('val_triple', False)
+    set_default('loss', 'mse')
+    set_default('use_style', 'False')
+    set_default('style_weight', 1)
 def read_params(params_file):
     import json
     with open(params_file) as f:
