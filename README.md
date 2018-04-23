@@ -1,6 +1,6 @@
 <script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 # Applying Textures to Untextured Images Using Neural Networks
-
+[See Proposal here](https://philkuz.github.io/184final/proposal)
 ## Summary
 
 We propose a method of applying textures automatically to non-textured images of 3d renderings using a fully-convolutional neural network. We take an untextured rendering, pass it into a trained Convolutional Neural Network that then outputs a (hopefully) proper textured result. This would remove the need to apply textures manually using mipmaps and texture coordinates, and potentially fixes issues like magnification of textures. The scope of this project focuses in particular on planes,
@@ -49,7 +49,9 @@ very least a parameterization of the desired transform. AS we desire to learn an
 ## Successes and Next Steps
 So far we've had difficulty getting these techniques to work. However a baseline test with style transfer, with the target texture suggests that we should be able to 
 make some strides using a style loss as a part of our metric. 
+
 [![](images/style_transfer.png)](https://github.com/philkuz/184final/blob/master/images/style_transfer.png)
+
 We started training the network with  a style loss (using a separate VGG network, inline with [Johnson et al.](https://arxiv.org/abs/1603.08155) and here are some preliminary results.
 [![](images/geometry-style-v2_partway_crop.jpg)](https://github.com/philkuz/184final/blob/master/images/geometry-style-v2_partway_crop.jpg)
 The results are slightly hard to decode and its questionable whether this will help much. We're playing around with the weighting of this style loss with respect to the original objective, and the loss had not converged when this output was made. However, the style transfer result suggests this can be a very fruitful avenue of exploration.
