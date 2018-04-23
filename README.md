@@ -34,18 +34,18 @@ At test time, we will then feed textureless images to the trained neural net in 
 
 ### Texture Cue 
 Ultimately, we desired to pass in an image with a texture cue (ie painted by a user) that provides some information on what the texture should be inside of certain regions of the image. In the image below, you can see the net is able to learn the proper color of the output object - but it does not manage to copy the texture details of the cue. We suspect that this is the result of the L2 loss and explore other options in the next steps.
-![](https://d1b10bmlvqabco.cloudfront.net/attach/jcawl9n5m3s4s3/icguy9n240e1rp/jg490i8n2v22/all.jpg)
+[![](https://d1b10bmlvqabco.cloudfront.net/attach/jcawl9n5m3s4s3/icguy9n240e1rp/jg490i8n2v22/all.jpg)](https://github.com/philkuz/184final/blob/master/images/geometry-v1.jpg)
 ### L0 Smoothing
 As stated in the proposal, one of our dataset involved texturizing "texture-less" real images. We created such training pairs by using the L0 norm to wipe the high frequency textures from the image. In the result below, the left column shows the input, "texture-less" images, the middle represents the output of the network, and the right
 is the ground-truth, textured images.
-![](https://d1b10bmlvqabco.cloudfront.net/attach/jcawl9n5m3s4s3/icguy9n240e1rp/jg49kul9iu17/individualImage.png)
+[![](https://d1b10bmlvqabco.cloudfront.net/attach/jcawl9n5m3s4s3/icguy9n240e1rp/jg49kul9iu17/individualImage.png)](https://github.com/philkuz/184final/blob/master/images/l0texturize.jpg)
 Clearly the results are promising, but it makes sense that many textures are not preserved. Additionally, it appears that the network likes to hallucinate weird lines in the image as you can see in the sky pictures. This result is intriguing, but we realized it might be out of scope of the entire project, so we're including the result here, but
 we will likely not continue down this route for the final project.
 ### Rotated Plane
 Finally, we ran a test where we attempted to learn a geometric transformation, a proof of concept for another texture input method where we'd provide the texture directly, 
 rather than through a texture cue. This method failed dramatically, as we had no extra parameters or degrees of freedom to ensure that a transform was learned. Upon reviewing the results, we realized the problem is a geometric transformation one that is already very difficult without an explicit geoemtric representation as part of the input, or at
 very least a parameterization of the desired transform. AS we desire to learn an arbitrary, non-linear transform, we believe this approach will not be fruitful, and will primarily focus on the texture cue direction.
-![](images/rotated_plane_crop.jpg)
+[![](images/rotated_plane_crop.jpg)](https://github.com/philkuz/184final/blob/master/images/rotated_plane.jpg)
 ## Successes and Next Steps
 So far we've had difficulty getting these techniques to work. However a baseline test with style transfer, with the target texture suggests that we should be able to 
 make some strides using a style loss as a part of our metric. 
