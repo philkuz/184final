@@ -1,0 +1,10 @@
+{
+    "checkpoint": "logs/texturizeL0/000",
+    "is_training": true,
+    "load_checkpoint": true,
+    "logs_path": "logs/texturizeL0",
+    "lr": 0.00001,
+    "num_epochs": 180,
+    "test_file": "data/test.txt",
+    "train_file": "data/train.txt"
+}
