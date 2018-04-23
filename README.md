@@ -1,7 +1,9 @@
 <script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 # Applying Textures to Untextured Images Using Neural Networks
 [See Proposal here](https://philkuz.github.io/184final/proposal)  
-[Milestone Slides](https://philkuz.github.io/184final/MilestoneSlides.pdf)
+[Milestone Slides](https://philkuz.github.io/184final/MilestoneSlides.pdf)  
+[Milestone Video](https://www.youtube.com/watch?v=iO4kSVsWVwg&feature=youtu.be)
+
 
 ## Summary
 
