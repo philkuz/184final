@@ -107,28 +107,3 @@ def draw_plane_mesh(mesh, num_points_width, num_points_height, shading_fun):
             glColor3fv(shading_fun(p0))
             glVertex3f(*p3)
     glEnd()
-
-
-# num_points_width = 200
-# num_points_height = 200
-# mesh = make_plane_mesh(5,7,num_points_width,num_points_height)
-# disp = np.transpose(np.array([0, 0, -7.0, 1.0]))
-# mesh = rotate_mesh(mesh, np.pi/6, -np.pi/8)
-# mesh = translate(mesh, disp)
-# #pygame.init()
-# display = (800, 600)
-# screen = pygame.display.set_mode(
-#     display, pygame.DOUBLEBUF | pygame.OPENGL | pygame.OPENGLBLIT)
-
-
-# i = 0
-# for filename in glob.iglob('textures/*.png'):
-#     #loadTexture(filename)
-
-#     gluPerspective(45, display[0] / display[1], 0.1, 50.0)
-#     glTranslatef(0.0, 0.0, -5)
-#     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-#     draw_plane_mesh(mesh,num_points_width,num_points_height,z_depth_shading)
-#     #draw_cube(lines=False)
-#     pygame.image.save(screen, "output/" + str(i) +  ".png")
-#     i += 1
