@@ -1,5 +1,6 @@
 mkdir -p ../data/geometry-v1
-cp lists/geometry-v1/*.txt ../data/geometry-v1
+# cp lists/geometry-v1/*.txt ../data/geometry-v1
+python convert_lists.py
 cd ../data/geometry-v1
 # src textures
 gdrive download 1X8QFfBeRgGEzPWMHKfjmVQlKktLx6CuG

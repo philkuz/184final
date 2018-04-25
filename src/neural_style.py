@@ -877,7 +877,7 @@ def main():
   else: render_single_image()
 def initialize_with_defaults():
   global args
-  args = parse_args(True)
+  args = parse_args(default=True)
 
 def run_image(params):
   global args

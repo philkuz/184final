@@ -237,17 +237,6 @@ def log_images(writer, tag, images, step):
     summary = tf.Summary(value=im_summaries)
     writer.add_summary(summary, step)
 
-def apply_texture_queue(input_image, output_image, texture_queue_type):
-    queue_types = ['center_circle']
-    if texture_queue_type not in queue_types:
-        raise ValueError('Texture queue type "{}" not recognized. Options are: {}'.format(texture_queue_type, queue_types))
-    if texture_queue_type == 'center_circle':
-        shape = input_image.shape[1:3]
-        center = get_center(shape)
-        radius = 20
-        mask = circle_mask(shape, center, radius)
-    queued_img = make_texture_queue(input_image, output_image, expand_dims_list(mask, [0,-1]))
-    return queued_img
 
 
 if params['is_training']:
