@@ -109,8 +109,10 @@ def get_loss(loss_type):
 objective_loss = loss = get_loss('mse')(network,output)
 if params['use_style']:
   import neural_style as ns
-  net_output = ns.build_vgg(ns.vgg_demean(network))
-  net_style = ns.build_vgg(ns.vgg_demean(output))
+  ns.initialize_with_defaults()
+
+  net_output = ns.build_vgg(ns.vgg_demean(network), True)
+  net_style = ns.build_vgg(ns.vgg_demean(output), True)
   style_loss = ns.style_loss_arb(sess, net_output, net_style)
   loss = loss + params['style_weight'] * style_loss
 global_step = tf.get_variable(

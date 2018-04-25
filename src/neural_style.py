@@ -11,7 +11,7 @@ import os
 '''
   parsing and configuration
 '''
-def parse_args(default=False):
+def parse_args(params=None, default=False):
 
   desc = "TensorFlow implementation of 'A Neural Algorithm for Artistic Style'"
   parser = argparse.ArgumentParser(description=desc)
@@ -214,6 +214,8 @@ def parse_args(default=False):
 
   if default:
     args = parser.parse_args([])
+  elif params is not None:
+    args = parser.parse_args(params)
   else:
     args = parser.parse_args()
 
@@ -235,7 +237,7 @@ def parse_args(default=False):
   remark: layers are manually initialized for clarity.
 '''
 
-def build_model(input_img, is_placeholder=True):
+def build_model(input_img, is_placeholder=False):
   if args.verbose: print('\nBUILDING VGG-19 NETWORK')
   net = {}
 
@@ -873,12 +875,16 @@ def main():
   args = parse_args()
   if args.video: render_video()
   else: render_single_image()
-def not_main():
+def initialize_with_defaults():
   global args
   args = parse_args(True)
+
+def run_image(params):
+  global args
+  args = parse_args(params)
+  if args.video: render_video()
+  else: render_single_image()
 
 
 if __name__ == '__main__':
   main()
-else:
-  not_main()

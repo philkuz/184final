@@ -1,5 +1,7 @@
 {
     "is_training": true,
+    "load_checkpoint" : true,
+    "continue_checkpoint": "../logs/geometry-style-v2/000",
     "logs_path": "../logs/geometry-style-v2",
     "lr": 0.0001,
     "num_epochs": 180,
