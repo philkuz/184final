@@ -10,8 +10,6 @@ from OpenGL.GLU import *
 from numpy.matlib import repmat
 
 pj = os.path.join
-# prevent video device stuff from happening
-os.environ["SDL_VIDEODRIVER"] = "dummy"
 #######################################################
 #####          Set Up Texture Directories         #####
 #######################################################
