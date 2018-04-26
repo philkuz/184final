@@ -16,7 +16,7 @@ pj = os.path.join
 
 data_dir = '../data_scratch'
 out_dir = pj(data_dir, 'geometry-v3')
-texture_dir = pj(data_dir, 'geometry-v1', 'textures')
+texture_dir = pj(data_dir, 'geometry-v1', 'src_textures')
 
 rot_planes_dir = pj(out_dir, 'rot_planes')
 rot_texture_dir = pj(out_dir, 'rot_textures')
@@ -57,7 +57,7 @@ texture_base_mesh = make_plane_mesh(width,length,2,2)
 
 bare_mesh = make_plane_mesh(width,length,num_points_width,num_points_height)
 rotated_base_meshes = []
-
+print('saving rotations')
 for rot_ind in range(len(rotations)):
     rotation = rotations[rot_ind]
     rot_mesh = rotate_mesh(bare_mesh, rotation[0], rotation[1])
@@ -77,15 +77,18 @@ for rot_ind in range(len(rotations)):
     texture_mesh = translate(texture_mesh, disp)
     rotated_base_meshes.append(texture_mesh)
 
+print('saving textured rotations')
 len_tex_dir = len(texture_dir)
-for filename in glob.iglob(pj(texture_dir, '*.png')):
+for filename in glob.glob(pj(texture_dir, '*.png'))[:1]:
+    print(filename)
     for rot_ind in range(len(rotated_base_meshes)):
         base_mesh = rotated_base_meshes[rot_ind]
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         draw_texture_plane(base_mesh, filename)
-        file_id_tmp = str(filename.split('/')[-1].split(',')[0])
-        file_id = str(filename[len_tex_dir:len_tex_dir+len_texture_id+1])
+        file_id = str(filename.split('/')[-1].split('.')[0])
+        file_id_tmp = str(filename[len_tex_dir:len_tex_dir+len_texture_id+1])
         print(file_id, file_id_tmp)
-        file_name = file_id + '_' + get_digit_id(id_digit_len, rot_ind)
-        pygame.image.save(screen, pj(rot_texture_dir,  file_name + ".png"))
-        input()
+        # file_name =i file_id + '_' +
+        out_filename =  pj(rot_texture_dir, '{}_{}.png'.format(file_id, get_digit_id(id_digit_len, rot_ind)))
+        print('saving ', out_filename)
+        pygame.image.save(screen, out_filename)
