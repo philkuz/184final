@@ -1,6 +1,10 @@
 <script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 # Applying Textures to Untextured Images Using Neural Networks
-[See Proposal here](https://philkuz.github.io/184final/proposal)
+[See Proposal here](https://philkuz.github.io/184final/proposal)  
+[Milestone Slides](https://philkuz.github.io/184final/MilestoneSlides.pdf)  
+[Milestone Video](https://www.youtube.com/watch?v=iO4kSVsWVwg&feature=youtu.be)
+
+
 ## Summary
 
 Producing textures for images is a labor intensive process that can take significant human time. Additionally, older source material, such as video games from antiquated hardware, lacks textural detail of the level modern systems contain. Finding a fast and effective way to automatically apply textures to untextured images could significantly reduce labor for projects that require handmade textures and additionaly efficiently reviatlaize older source material. We attempt to apply textures automatically to non-textured images of 3d renderings using a fully-convolutional neural network as a final step in a graphics pipeline. Our end goal is to produce a system in which one produces an untextured rendering, passes it into a trained Convolutional Neural Network that then outputs a (hopefully) properly textured result. Of particular interest is the succesfull application of textures to polygons rotated in 3d space as texture application on individual polygons is a first step to applying textures to polygon meshes. Thus far we have produced partial results in which some level of the desired texture is evident on our models output. We summarize the progress we have made in this direction and detail our next steps.

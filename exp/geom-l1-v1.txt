@@ -1,0 +1,15 @@
+{
+    "is_training": true,
+    "load_checkpoint": false,
+    "logs_path": "../logs/geometry-v3",
+    "lr": 0.0001,
+    "gpu_number" : 1,
+    "num_epochs": 180,
+    "texture_queue" : "center_circle",
+    "test_file": "../data/geometry-v1/test-v1.txt",
+    "train_file": "../data/geometry-v1/train-v1.txt",
+    "val_triples": true,
+    "loss": "l1"
+    "use_style": true,
+    "style_weight" : 1e-4
+}

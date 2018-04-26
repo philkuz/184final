@@ -1,3 +1,8 @@
+# how to get the data
+FIRST INSTALL [gdrive](https://github.com/prasmussen/gdrive)
+then you can get the data
+
+
 # L0 data
 ```
 bash download_fivek.sh
