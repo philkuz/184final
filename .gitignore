@@ -1,5 +1,9 @@
+textures/*
+outputs/*
 data/
 __pycache__/
 logs/
 nb/
 .ipynb_checkpoints/
+*.py[co]
+*.mat

@@ -69,16 +69,18 @@ def prepare_data(train_file, test_file):
           val_output_files.append(line[1])
     return input_files, output_files, val_input_files, val_output_files
 
-os.system('nvidia-smi -q -d Memory |grep -A4 GPU|grep Free >tmp')
-os.environ['CUDA_VISIBLE_DEVICES']=str(np.argmax([int(x.split()[2]) for x in open('tmp','r').readlines()]))
-print(os.environ['CUDA_VISIBLE_DEVICES'])
-os.system('rm tmp')
 args = setup_argparse()
 if args.params:
     params = read_params(args.params)
 else:
     params = {}
 default_params(params)
+if params['gpu_number'] is None:
+  os.system('nvidia-smi -q -d Memory |grep -A4 GPU|grep Free >tmp')
+  os.environ['CUDA_VISIBLE_DEVICES']=str(np.argmax([int(x.split()[2]) for x in open('tmp','r').readlines()]))
+  os.system('rm tmp')
+else:
+  os.environ['CUDA_VISIBLE_DEVICES'] = str(params['gpu_number'])
 is_training=params['is_training']
 sess=tf.Session()
 train_file = params['train_file']
@@ -95,8 +97,24 @@ if params['resize_size'] is not None:
     network=build(resize_img, weights_initializer)
 else:
     network=build(input_img, weights_initializer)
-loss=tf.reduce_mean(tf.square(network-output))
+def get_loss(loss_type):
+    if loss_type == 'mse':
+      loss=lambda net, gt: tf.reduce_mean(tf.square(net-gt))
+    elif loss_type == 'l1':
+      loss = lambda net, gt: tf.reduce_mean(tf.abs(net-gt))
+    else:
+      raise ValueError("'{}' not implemented as a loss".format(loss_type))
+    return loss
 
+objective_loss = loss = get_loss('mse')(network,output)
+if params['use_style']:
+  import neural_style as ns
+  ns.initialize_with_defaults()
+
+  net_output = ns.build_vgg(ns.vgg_demean(network), True)
+  net_style = ns.build_vgg(ns.vgg_demean(output), True)
+  style_loss = ns.style_loss_arb(sess, net_output, net_style)
+  loss = loss + params['style_weight'] * style_loss
 global_step = tf.get_variable(
     'global_step', [], trainable = False,
     initializer = tf.constant_initializer(0), dtype = tf.int64)
@@ -151,7 +169,10 @@ def pad(image, shape=(480, 480)):
     return np.pad(image, padding_array, 'constant')
 
     return image
+
 def merge_images(list_of_image_lists, out_shape=(480, 480)):
+    ''' merge images '''
+
     numcols = len(list_of_image_lists)
     numrows = len(list_of_image_lists[0])
     lengths = [ len(l) for l in list_of_image_lists]
@@ -194,6 +215,7 @@ def log_img(writer, tag, img, step):
     # Create and write Summary
     summary = tf.Summary(value=im_summaries)
     writer.add_summary(summary, step)
+
 def log_images(writer, tag, images, step):
     """Logs a list of images."""
 
@@ -214,20 +236,13 @@ def log_images(writer, tag, images, step):
     # Create and write Summary
     summary = tf.Summary(value=im_summaries)
     writer.add_summary(summary, step)
-def apply_texture_queue(input_image, output_image, texture_queue_type):
-    queue_types = ['center_circle']
-    if texture_queue_type not in queue_types:
-        raise ValueError('Texture queue type "{}" not recognized. Options are: {}'.format(texture_queue_type, queue_types))
-    if texture_queue_type == 'center_circle':
-        shape = input_image.shape[1:3]
-        center = get_center(shape)
-        radius = 20
-        mask = circle_mask(shape, center, radius)
-    queued_img = make_texture_queue(input_image, output_image, expand_dims_list(mask, [0,-1]))
-    return queued_img
+
 
 
 if params['is_training']:
+    if params['use_style']:
+      tf.summary.scalar('style_loss', style_loss, collections=['train'])
+      tf.summary.scalar('objective_loss', objective_loss, collections=['train'])
     tf.summary.scalar('loss', loss, collections=['train'])
     train_summary_op = tf.summary.merge_all('train')
     all_losses=np.zeros(len(input_files), dtype=float)
@@ -242,7 +257,10 @@ if params['is_training']:
         # if os.path.isdir("%s/%04d"%(task,epoch)):
         #     continue
         cnt=0
-        for id in np.random.permutation(len(input_files)):
+        random_files = np.random.permutation(len(input_files))
+        if args.debug:
+          random_files[:2]
+        for id in random_files:
             step= sess.run([global_step])[0]
             st=time.time()
             if input_images[id] is None:
@@ -285,7 +303,11 @@ if params['is_training']:
             print("ffwd time %.3f"%(time.time()-st))
             output_image=np.minimum(np.maximum(output_image,0.0),1.0)*255.0
             val_output_pred.append(output_image)
-            cv2.imwrite(pj(epoch_dir,"%06d.jpg"%(ind)),np.uint8(output_image[0,:,:,:]))
+            if params['val_triples']:
+                output_image = merge_images([[input_image], [output_image], [output_image_gt]])
+                cv2.imwrite(pj(epoch_dir,"%06d.jpg"%(ind)),np.uint8(output_image))
+            else:
+                cv2.imwrite(pj(epoch_dir,"%06d.jpg"%(ind)),np.uint8(output_image[0,:,:,:]))
         merged_image = merge_images([val_input_images,  val_output_pred, val_output_gts])
         cv2.imwrite(pj(epoch_dir, 'all.jpg'), np.uint8(merged_image))
         # log_img(writer, 'all', pj(epoch_dir, 'all.jpg'),  step)
@@ -297,7 +319,8 @@ if not os.path.exists(out_dir):
 for val_file, output_file in zip(val_input_files, val_output_files):
     if not os.path.isfile(val_file):
         continue
-    contain_dir, filename = val_file.split('/')[-2:]
+    contain_dir, _= val_file.split('/')[-2:]
+    _, filename = output_file.split('/')[-2:]
     #filename, ext = filename.split('.')
     #filename = '/'.join((contain_dir, filename)
     # print(contain_dir, filename)
@@ -318,6 +341,9 @@ for val_file, output_file in zip(val_input_files, val_output_files):
     output_image=sess.run(network,feed_dict={input_img:input_image})
     print("%.3f"%(time.time()-st))
     output_image=np.minimum(np.maximum(output_image,0.0),1.0)*255.0
-    merged_image = merge_images([[input_image], [output_image], [output_image_gt]])
-    cv2.imwrite(os.path.join(out_dir, contain_dir, filename) ,np.uint8(output_image[0,:,:,:]))
+    if params['val_triples']:
+        output_image = merge_images([[input_image*255], [output_image], [output_image_gt*255]])
+        cv2.imwrite(os.path.join(out_dir, filename) ,np.uint8(output_image))
+    else:
+        cv2.imwrite(os.path.join(out_dir, filename) ,np.uint8(output_image[0,:,:,:]))
 

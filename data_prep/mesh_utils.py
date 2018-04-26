@@ -1,6 +1,8 @@
 import pygame
 import sys
 import glob
+import random
+import math
 import numpy as np
 from OpenGL.GL import *
 from OpenGL.GLU import *
@@ -67,7 +69,7 @@ def make_plane_mesh(width, length, num_points_width, num_points_height):
     mesh = translate(mesh, displacement)
     return mesh
 
-def z_depth_shading(point, z_min=-10, z_max=0):
+def z_depth_shading(point, z_min=-10, z_max=2):
     z_value = point[2]
     r_val = (z_value - z_min)/ (z_max - z_min)
     if r_val < 0:
@@ -89,6 +91,30 @@ def draw_texture_plane(mesh, texture_filename):
     glVertex3f(*mesh[:3,2])
     glEnd()
 
+def sample_sphere():
+    u = random.uniform(0, 1)
+    v = random.uniform(0, 1)
+    theta = 2*math.pi*u 
+    phi = math.acos(2*v - 1)
+    #if theta or phi > pi, reflect back to (0, pi)
+    if theta > math.pi:
+        offset_theta =  theta - math.pi
+        theta = theta - 2*offset_theta
+    if phi > math.pi:
+        offset_phi = phi - math.pi
+        phi = phi - 2*offset_phi
+    #center theta and phi from (0, pi) to (-pi/2, pi/2)
+    theta = theta - math.pi/2
+    phi = phi - math.pi/2
+    return (theta, phi)
+
+def get_digit_id(digits, idx):
+    idx_str = str(idx)
+    if len(idx_str) > digits:
+        raise ValueError('Index out of bounds for ' + str(digits) + ' digit numbers')
+    return (digits-len(idx_str))*'0' + idx_str
+
+
 
 def draw_plane_mesh(mesh, num_points_width, num_points_height, shading_fun):
     glBegin(GL_QUADS)
@@ -106,29 +132,5 @@ def draw_plane_mesh(mesh, num_points_width, num_points_height, shading_fun):
             p3 = mesh[:3, x_corner_ind + num_points_width*(y_corner_ind + 1)]
             glColor3fv(shading_fun(p0))
             glVertex3f(*p3)
+            glColor3fv([1.0,1.0,1.0])
     glEnd()
-
-
-# num_points_width = 200
-# num_points_height = 200
-# mesh = make_plane_mesh(5,7,num_points_width,num_points_height)
-# disp = np.transpose(np.array([0, 0, -7.0, 1.0]))
-# mesh = rotate_mesh(mesh, np.pi/6, -np.pi/8)
-# mesh = translate(mesh, disp)
-# #pygame.init()
-# display = (800, 600)
-# screen = pygame.display.set_mode(
-#     display, pygame.DOUBLEBUF | pygame.OPENGL | pygame.OPENGLBLIT)
-
-
-# i = 0
-# for filename in glob.iglob('textures/*.png'):
-#     #loadTexture(filename)
-
-#     gluPerspective(45, display[0] / display[1], 0.1, 50.0)
-#     glTranslatef(0.0, 0.0, -5)
-#     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-#     draw_plane_mesh(mesh,num_points_width,num_points_height,z_depth_shading)
-#     #draw_cube(lines=False)
-#     pygame.image.save(screen, "output/" + str(i) +  ".png")
-#     i += 1

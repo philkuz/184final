@@ -1,0 +1,14 @@
+{
+    "is_training": true,
+    "load_checkpoint" : true,
+    "continue_checkpoint": "../logs/geometry-style-v2/000",
+    "logs_path": "../logs/geometry-style-v2",
+    "lr": 0.0001,
+    "num_epochs": 180,
+    "texture_queue" : "center_circle",
+    "test_file": "../data/geometry-v1/test-v1.txt",
+    "train_file": "../data/geometry-v1/train-v1.txt",
+    "val_triples":true,
+    "use_style": true,
+    "style_weight" : 1e-5
+}
