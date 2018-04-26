@@ -53,18 +53,18 @@ texture_base_mesh = make_plane_mesh(width,length,2,2)
 
 bare_mesh = make_plane_mesh(width,length,num_points_width,num_points_height)
 rotated_base_meshes = []
+display = (800, 600)
+screen = pygame.display.set_mode(
+    display, pygame.DOUBLEBUF | pygame.OPENGL | pygame.OPENGLBLIT)
+
+gluPerspective(45, display[0] / display[1], 0.1, 50.0)
+glTranslatef(0.0, 0.0, -5)
 
 for rot_ind in range(len(rotations)):
 	rotation = rotations[rot_ind]
 	rot_mesh = rotate_mesh(bare_mesh, rotation[0], rotation[1])
 	rot_mesh = translate(rot_mesh, disp)
 	#pygame.init()
-	display = (800, 600)
-	screen = pygame.display.set_mode(
-	    display, pygame.DOUBLEBUF | pygame.OPENGL | pygame.OPENGLBLIT)
-
-	gluPerspective(45, display[0] / display[1], 0.1, 50.0)
-	glTranslatef(0.0, 0.0, -5)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 	draw_plane_mesh(rot_mesh,num_points_width,num_points_height,shadin_fun)
 	pygame.image.save(screen, rot_planes_dir + '/' + get_digit_id(id_digit_len, rot_ind) + '.png')
