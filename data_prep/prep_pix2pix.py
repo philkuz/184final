@@ -7,15 +7,16 @@ sys.path.append('../src/')
 from utils import apply_texture_queue
 pj = os.path.join
 
-data_dir = '../data/geometry-v1'
 split = 'test'
-out_basedir = '../data/geometry-v1/pix2pix'
+version = 'v3'
+data_dir = '../data_scratch/geometry-{}'.format(version)
+out_basedir = pj(data_dir, 'pix2pix')
 
 out_dir = pj(out_basedir, split)
 if not os.path.exists(out_dir):
   os.makedirs(out_dir)
 
-train_file = pj(data_dir, '{}-v1.txt'.format(split))
+train_file = pj(data_dir, '{}-{}.txt'.format(split, version))
   # return image.resize((width * factor, height * factor))
 def rescale(image, smallest_edge=256):
   width, height = image.size
