@@ -13,6 +13,8 @@ import collections
 import math
 import time
 
+from utils import *
+
 parser = argparse.ArgumentParser()
 parser.add_argument("--input_dir", help="path to folder containing images")
 parser.add_argument("--mode", required=True, choices=["train", "test", "export"])
@@ -46,12 +48,20 @@ parser.add_argument("--gan_weight", type=float, default=1.0, help="weight on GAN
 
 # export options
 parser.add_argument("--output_filetype", default="png", choices=["png", "jpeg"])
+
+# cue options
+parser.add_argument("--use_cue", action='store_true')
+parser.add_argument("--texture_cue", default="center_circle", choices=["center_circle", "drawn_masks"])
+parser.add_argument("--img_masks", action='store_true')
+parser.add_argument("--input_mask_dir", help="path to folder containing masks")
+# parser.add_argument("--
+
 a = parser.parse_args()
 
 EPS = 1e-12
 CROP_SIZE = 256
 
-Examples = collections.namedtuple("Examples", "paths, inputs, targets, count, steps_per_epoch")
+Examples = collections.namedtuple("Examples", "paths, inputs, targets, count, steps_per_epoch, masks")
 Model = collections.namedtuple("Model", "outputs, predict_real, predict_fake, discrim_loss, discrim_grads_and_vars, gen_loss_GAN, gen_loss_L1, gen_grads_and_vars, train")
 
 
@@ -242,6 +252,15 @@ def load_examples():
 
     if len(input_paths) == 0:
         raise Exception("input_dir contains no image files")
+    if a.img_masks:
+      input_mask_paths = glob.glob(os.path.join(a.input_mask_dir, "*.jpg"))
+      decode = tf.image.decode_jpeg
+      if len(input_mask_paths) == 0:
+          input_mask_paths = glob.glob(os.path.join(a.input_mask_dir, "*.png"))
+          decode = tf.image.decode_png
+
+      if len(input_mask_paths) == 0:
+          raise Exception("input_mask_dir contains no image files")
 
     def get_name(path):
         name, _ = os.path.splitext(os.path.basename(path))
@@ -256,16 +275,25 @@ def load_examples():
 
     with tf.name_scope("load_images"):
         path_queue = tf.train.string_input_producer(input_paths, shuffle=a.mode == "train")
+
         reader = tf.WholeFileReader()
         paths, contents = reader.read(path_queue)
         raw_input = decode(contents)
         raw_input = tf.image.convert_image_dtype(raw_input, dtype=tf.float32)
+
+        if a.img_masks:
+            mask_path_queue = tf.train.string_input_producer(input_mask_paths, shuffle=a.mode == "train")
+            mask_paths, mask_contents = reader.read(mask_path_queue)
+            raw_mask_input = decode(mask_contents)
+            raw_mask_input = tf.image.convert_image_dtype(raw_mask_input, dtype=tf.float32)
+
 
         assertion = tf.assert_equal(tf.shape(raw_input)[2], 3, message="image does not have 3 channels")
         with tf.control_dependencies([assertion]):
             raw_input = tf.identity(raw_input)
 
         raw_input.set_shape([None, None, 3])
+        raw_mask_input.set_shape([None, None, 3])
 
         if a.lab_colorization:
             # load color and brightness from image, no B image exists here
@@ -279,12 +307,23 @@ def load_examples():
             a_images = preprocess(raw_input[:,:width//2,:])
             b_images = preprocess(raw_input[:,width//2:,:])
 
+        if a.img_masks:
+            masks =  make_masks(raw_mask_input)
+
+
     if a.which_direction == "AtoB":
         inputs, targets = [a_images, b_images]
     elif a.which_direction == "BtoA":
         inputs, targets = [b_images, a_images]
     else:
         raise Exception("invalid direction")
+
+    #
+    if a.use_cue and not a.img_masks:
+      inputs = apply_texture_queue(inputs, targets, a.texture_cue)[0]
+    elif a.img_masks and a.use_cue:
+      inputs = make_texture_queue(inputs, targets, masks)
+
 
     # synchronize seed for image operations so that we do the same operations to both
     # input and output images
@@ -311,7 +350,12 @@ def load_examples():
     with tf.name_scope("target_images"):
         target_images = transform(targets)
 
-    paths_batch, inputs_batch, targets_batch = tf.train.batch([paths, input_images, target_images], batch_size=a.batch_size)
+    if a.use_cue and a.img_masks:
+        with tf.name_scope("mask_images"):
+            input_masks = transform(masks)
+        paths_batch, inputs_batch, targets_batch, masks_batch = tf.train.batch([paths, input_images, target_images, input_masks], batch_size=a.batch_size)
+    else:
+        paths_batch, inputs_batch, targets_batch = tf.train.batch([paths, input_images, target_images], batch_size=a.batch_size)
     steps_per_epoch = int(math.ceil(len(input_paths) / a.batch_size))
 
     return Examples(
@@ -320,6 +364,7 @@ def load_examples():
         targets=targets_batch,
         count=len(input_paths),
         steps_per_epoch=steps_per_epoch,
+        masks=masks_batch if a.img_masks and a.use_cue else None
     )
 
 
@@ -366,11 +411,11 @@ def create_generator(generator_inputs, generator_outputs_channels):
             if decoder_layer == 0:
                 # first decoder layer doesn't have skip connections
                 # since it is directly connected to the skip_layer
-                input = layers[-1]
+                ipt = layers[-1]
             else:
-                input = tf.concat([layers[-1], layers[skip_layer]], axis=3)
+                ipt = tf.concat([layers[-1], layers[skip_layer]], axis=3)
 
-            rectified = tf.nn.relu(input)
+            rectified = tf.nn.relu(ipt)
             # [batch, in_height, in_width, in_channels] => [batch, in_height*2, in_width*2, out_channels]
             output = gen_deconv(rectified, out_channels)
             output = batchnorm(output)
@@ -382,8 +427,8 @@ def create_generator(generator_inputs, generator_outputs_channels):
 
     # decoder_1: [batch, 128, 128, ngf * 2] => [batch, 256, 256, generator_outputs_channels]
     with tf.variable_scope("decoder_1"):
-        input = tf.concat([layers[-1], layers[0]], axis=3)
-        rectified = tf.nn.relu(input)
+        ipt = tf.concat([layers[-1], layers[0]], axis=3)
+        rectified = tf.nn.relu(ipt)
         output = gen_deconv(rectified, generator_outputs_channels)
         output = tf.tanh(output)
         layers.append(output)
@@ -397,11 +442,11 @@ def create_model(inputs, targets):
         layers = []
 
         # 2x [batch, height, width, in_channels] => [batch, height, width, in_channels * 2]
-        input = tf.concat([discrim_inputs, discrim_targets], axis=3)
+        ipt = tf.concat([discrim_inputs, discrim_targets], axis=3)
 
         # layer_1: [batch, 256, 256, in_channels * 2] => [batch, 128, 128, ndf]
         with tf.variable_scope("layer_1"):
-            convolved = discrim_conv(input, a.ndf, stride=2)
+            convolved = discrim_conv(ipt, a.ndf, stride=2)
             rectified = lrelu(convolved, 0.2)
             layers.append(rectified)
 
@@ -570,8 +615,8 @@ def main():
         if a.lab_colorization:
             raise Exception("export not supported for lab_colorization")
 
-        input = tf.placeholder(tf.string, shape=[1])
-        input_data = tf.decode_base64(input[0])
+        ipt = tf.placeholder(tf.string, shape=[1])
+        input_data = tf.decode_base64(ipt[0])
         input_image = tf.image.decode_png(input_data)
 
         # remove alpha channel if present
@@ -598,7 +643,7 @@ def main():
         key = tf.placeholder(tf.string, shape=[1])
         inputs = {
             "key": key.name,
-            "input": input.name
+            "input": ipt.name
         }
         tf.add_to_collection("inputs", json.dumps(inputs))
         outputs = {
@@ -649,6 +694,8 @@ def main():
         inputs = deprocess(examples.inputs)
         targets = deprocess(examples.targets)
         outputs = deprocess(model.outputs)
+        if a.img_masks:
+          masks = examples.masks
 
     def convert(image):
         if a.aspect_ratio != 1.0:
@@ -667,6 +714,10 @@ def main():
 
     with tf.name_scope("convert_outputs"):
         converted_outputs = convert(outputs)
+    if a.img_masks and a.use_cue:
+        with tf.name_scope("convert_masks"):
+            converted_masks = convert(masks)
+            # converted_masks = tf.expand_dims(converted_masks)
 
     with tf.name_scope("encode_images"):
         display_fetches = {
@@ -675,6 +726,9 @@ def main():
             "targets": tf.map_fn(tf.image.encode_png, converted_targets, dtype=tf.string, name="target_pngs"),
             "outputs": tf.map_fn(tf.image.encode_png, converted_outputs, dtype=tf.string, name="output_pngs"),
         }
+        if a.img_masks and a.use_cue:
+          # TODO add circle masks to this shit
+          display_fetches['mask'] = tf.map_fn(tf.image.encode_png, converted_masks, dtype=tf.string, name="output_pngs"),
 
     # summaries
     with tf.name_scope("inputs_summary"):
@@ -685,6 +739,9 @@ def main():
 
     with tf.name_scope("outputs_summary"):
         tf.summary.image("outputs", converted_outputs)
+    if a.img_masks and a.use_cue:
+        with tf.name_scope("masks_summary"):
+            tf.summary.image("masks", converted_masks)
 
     with tf.name_scope("predict_real_summary"):
         tf.summary.image("predict_real", tf.image.convert_image_dtype(model.predict_real, dtype=tf.uint8))
@@ -773,7 +830,6 @@ def main():
                     sv.summary_writer.add_summary(results["summary"], results["global_step"])
 
                 if should(a.display_freq):
-                    print("saving display images")
                     filesets = save_images(results["display"], step=results["global_step"])
                     append_index(filesets, step=True)
 

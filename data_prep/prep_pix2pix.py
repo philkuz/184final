@@ -10,7 +10,7 @@ pj = os.path.join
 split = 'test'
 version = 'v3'
 data_dir = '../data_scratch/geometry-{}'.format(version)
-out_basedir = pj(data_dir, 'pix2pix')
+out_basedir = pj('../data/geometry-{}'.format(version), 'pix2pix')
 
 out_dir = pj(out_basedir, split)
 if not os.path.exists(out_dir):
@@ -52,23 +52,30 @@ def make_cue(ipt, opt):
 with open(train_file) as f:
   for line in f:
     ipt, opt = line.strip().split(',')
+    out_path = pj(out_dir, opt.split('/')[-1])
+    if os.path.exists(out_path):
+      continue
     # print(ipt, opt)
-    input_image = Image.open(ipt)
-    output_image = Image.open(opt)
-    input_image= rescale(input_image)
-    output_image= rescale(output_image)
+    try:
+      input_image = Image.open(ipt)
+      output_image = Image.open(opt)
+      input_image= rescale(input_image)
+      output_image= rescale(output_image)
 
-    # crop the center of ipt and opt
-    input_image = crop_img(input_image)
-    output_image = crop_img(output_image)
-    # for now add the cue as a preprocessing step
-    input_image = make_cue(input_image, output_image)
+      # crop the center of ipt and opt
+      input_image = crop_img(input_image)
+      output_image = crop_img(output_image)
+      # for now add the cue as a preprocessing step
+      # input_image = make_cue(input_image, output_image)
 
-    # combine ipt and opt
-    new_image = Image.new('RGB', (512, 256))
-    new_image.paste(output_image, (0, 0))
-    new_image.paste(input_image, (256, 0))
-    new_image.save(pj(out_dir, opt.split('/')[-1]))
+      # combine ipt and opt
+      new_image = Image.new('RGB', (512, 256))
+      new_image.paste(output_image, (0, 0))
+      new_image.paste(input_image, (256, 0))
+      new_image.save(out_path)
+    except Exception as e:
+      with open('file.txt', 'a') as f:
+        f.write('{}\n'.format(out_path))
     # input()
 
 

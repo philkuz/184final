@@ -8,7 +8,7 @@ from random import shuffle
 pj = os.path.join
 abspath = os.path.abspath
 ### PARAMS ###
-src_data_root = '../data_scratch/geometry-v3'
+src_data_root = '../data/geometry-v3'
 textured_out = pj(src_data_root, 'rot_textures')
 split = 0.8
 version = 'v3'
