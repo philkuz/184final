@@ -11,7 +11,7 @@
     <style>
       pre { margin-left: 15px !important }
     </style>
-    <script src="../lib/prism.js"></script>
+    <!-- <script src="../lib/prism.js"></script> -->
     <script>
       (function() {
         var fabricUrl = 'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/2.2.3/fabric.min.js';
@@ -24,7 +24,7 @@
         document.write('<script src="' + fabricUrl + '"><\/script>');
       })();
     </script>
-    <script src="../js/master.js"></script>
+    <!-- <script src="../js/master.js"></script> -->
 
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script> -->
   </head>
@@ -47,7 +47,6 @@
 
 
     <div id="bd-wrapper" ng-controller="CanvasControls">
-      <h2><span>Fabric.js demos</span> &middot; Free drawing</h2>
 
       <style>
 #drawing-mode {
@@ -88,12 +87,26 @@ label {
     <select id="drawing-mode-selector">
       <option>Pencil</option>
       <option>waffle</option>
-      <option>concrete</option>
-      <!-- <option>hline</option> -->
-      <!-- <option>vline</option> -->
-      <!-- <option>square</option> -->
-      <!-- <option>diamond</option> -->
-      <!-- <option>texture</option> -->
+      <!-- <option>concrete</option> -->
+      <option>bubble</option>
+      <option>checkerboard</option>
+      <option>fibrous</option>
+      <option>marble</option>
+      <option>waffled</option>
+      <option>wooden</option>
+    </select><br>
+    <label for="plane-selector">Plane</label>
+    <select id="plane-selector">
+      <option>0</option>
+      <option>1</option>
+      <option>2</option>
+      <option>3</option>
+      <option>4</option>
+      <option>5</option>
+      <option>6</option>
+      <option>7</option>
+      <option>8</option>
+      <option>9</option>
     </select><br>
 
     <label for="drawing-line-width">Line width:</label>
@@ -266,17 +279,6 @@ request_in_progress = false;
 config = {
     weights_url: "/models/geomv4.bin",
     }
-function clear(canvas) {
-  img_src = 'ipt.png';
-  fabric.Image.fromURL(img_src, function(img) {
-	 //img.set({width: canvas.width, height: canvas.height, originX: 'left', originY: 'top'});
-	 canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
-	    scaleX: canvas.width / img.width,
-		   scaleY: canvas.height / img.height
-	 });
-  });
-  canvas.clear();
-}
 function fmt() {
   if (arguments.length === 0) {
     return "error"
@@ -412,6 +414,22 @@ function createContext(width, height, scale) {
   var outCanvas = this.__canvas = new fabric.Canvas('d', {
     isDrawingMode: false
   });
+  function set_bg(img_src) {
+    fabric.Image.fromURL(img_src, function(img) {
+       //img.set({width: canvas.width, height: canvas.height, originX: 'left', originY: 'top'});
+       canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
+          scaleX: canvas.width / img.width,
+             scaleY: canvas.height / img.height
+       });
+    });
+    cur_bg = img_src;
+    }
+  var cur_bg = 'rot/0.png';
+  function clear() {
+    set_bg(cur_bg, canvas);
+    set_bg(cur_bg, outCanvas);
+    canvas.clear();
+  }
 
   fabric.Object.prototype.transparentCorners = false;
 
@@ -421,9 +439,9 @@ function createContext(width, height, scale) {
       drawingLineWidthEl = $('drawing-line-width'),
       clearEl = $('clear-canvas'), 
       processEl = $('process');
-  clear(canvas);
+  clear();
 
-  clearEl.onclick = function() {clear(canvas); };
+  clearEl.onclick = function() {clear(); };
   processEl.onclick =  function () {
 	console.log('process');
 	if (this.progress != null) {
@@ -604,36 +622,43 @@ function createContext(width, height, scale) {
 
       return patternCanvas;
     };
+    function makeTextureBrush(name) {
+      var img = new Image();
+      img.src = name;
+      var textureBrush = new fabric.PatternBrush(canvas);
+      textureBrush.source = img;
+      return textureBrush;
+    }
 
-    var img = new Image();
-    img.src = '0000000_1.png';
+    var bubbleBrush = makeTextureBrush('textures/bubbles.jpg');
+    var checkerboardBrush = makeTextureBrush('textures/checkerboard.jpg');
+    var fibrousBrush = makeTextureBrush('textures/fibrous.jpg');
+    var marbleBrush = makeTextureBrush('textures/marble.jpg');
+    var waffledBrush = makeTextureBrush('textures/waffled.jpg');
+    var woodenBrush = makeTextureBrush('textures/wooden.jpg');
 
-    var texturePatternBrush = new fabric.PatternBrush(canvas);
-    texturePatternBrush.source = img;
-
-    var concreteImg = new Image();
-    concreteImg.src = 'concrete.jpg';
-
-    var concreteBrush = new fabric.PatternBrush(canvas);
-    concreteBrush.source = concreteImg;
-
-    var waffleImg = new Image();
-    waffleImg.src = 'waffle.jpg';
-
-    var waffleBrush = new fabric.PatternBrush(canvas);
-    waffleBrush.source = waffleImg;
   }
+
 
   $('drawing-mode-selector').onchange = function() {
 
-    if (this.value === 'concrete') {
-      canvas.freeDrawingBrush = concreteBrush;
+    if (this.value === 'bubble') {
+      canvas.freeDrawingBrush = bubbleBrush;
     }
-    else if (this.value === 'crayon') {
-      canvas.freeDrawingBrush = crayonBrush;
+    else if (this.value === 'checkerboard') {
+      canvas.freeDrawingBrush = checkerboardBrush;
     }
-    else if (this.value === 'waffle') {
-      canvas.freeDrawingBrush = waffleBrush;
+    else if (this.value === 'fibrous') {
+      canvas.freeDrawingBrush = fibrousBrush;
+    }
+    else if (this.value === 'marble') {
+      canvas.freeDrawingBrush = marbleBrush;
+    }
+    else if (this.value === 'wooden') {
+      canvas.freeDrawingBrush = woodenBrush;
+    }
+    else if (this.value === 'waffled') {
+      canvas.freeDrawingBrush = waffledBrush;
     }
     else {
       canvas.freeDrawingBrush = new fabric[this.value + 'Brush'](canvas);
@@ -643,6 +668,43 @@ function createContext(width, height, scale) {
       canvas.freeDrawingBrush.color = drawingColorEl.value;
       canvas.freeDrawingBrush.width = parseInt(drawingLineWidthEl.value, 10) || 1;
     }
+  };
+  $('plane-selector').onchange = function() {
+
+    if (this.value === '0') {
+      set_bg('rot/0.png')
+    }
+    else if (this.value === '1') {
+      set_bg('rot/1.png')
+    }
+    else if (this.value === '2') {
+      set_bg('rot/2.png')
+    }
+    else if (this.value === '3') {
+      set_bg('rot/3.png')
+    }
+    else if (this.value === '4') {
+      set_bg('rot/4.png')
+    }
+    else if (this.value === '5') {
+      set_bg('rot/5.png')
+    }
+    else if (this.value === '6') {
+      set_bg('rot/6.png')
+    }
+    else if (this.value === '7') {
+      set_bg('rot/7.png')
+    }
+    else if (this.value === '8') {
+      set_bg('rot/8.png')
+    }
+    else if (this.value === '9') {
+      set_bg('rot/9.png')
+    }
+    else {
+      set_bg('rot/9.png')
+    }
+
   };
 
   drawingColorEl.onchange = function() {
@@ -675,18 +737,6 @@ function createContext(width, height, scale) {
 
     </div>
 
-    <script>
-      (function(){
-        var mainScriptEl = document.getElementById('main');
-        if (!mainScriptEl) return;
-        var preEl = document.createElement('pre');
-        var codeEl = document.createElement('code');
-        codeEl.innerHTML = mainScriptEl.innerHTML;
-        codeEl.className = 'language-javascript';
-        preEl.appendChild(codeEl);
-        document.getElementById('bd-wrapper').appendChild(preEl);
-      })();
-    </script>
 
     <script>
 (function() {
