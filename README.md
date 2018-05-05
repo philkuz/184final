@@ -14,7 +14,7 @@ Our original proposal was to arbitrarily texturize geometric objects inside a sc
 
 We approached the problem with the CNN derived in Chen and Xu et. al. [1](https://arxiv.org/pdf/1709.00643.pdf). This CNN shows that a simple architecture (fully-convolutional) with a simple loss function (L2 loss) could learn a to approximate a large number of operators such as L0 smoothing and style transfer efficiently. We figured that our problem was similar, except that we wanted to encode information about the desired texture using some sort of cue passed to the network. 
 ### Rotating Plane
-Our first approach was to try and pass in the texture directly to the network. This would validate whether the network could learn to "wrap" the texture around the geometry. If it could easily learn the homographic transformation of a flat plane to the rotated plane, then we could use this method combined with information about the geometry to automatically apply the texture. Unfortunately the problem of learning geometric transformations with neural nets is quite difficult. The central issue in this task arises in the size of the perceptive field of each neuron. Consider a simple translation. If a pixel is to be translated n pixels from it's input position to it's output position. This thus implies that the perceptive field of the final pixel must contain pixels at least n pixels away. More generally, any translation mapping a pixel in the input to a pixel m pixels away requires the perceptive field of the final pixel to be at least m. Perceptive field increases with depth of the neural network. Often, the perceptive field of hidden units does not become large enough to even possibly learn such transformation until very deep layers, reducing the net's ability to learn robust homomorphic mappings. Attempts to embed the structure of geometric transformation, such as transformation matrices, in which the parameters of these structures are learned have demonstrated success. cite As our initial model did not contain any such elements, the model was unable to learn the desired transformations. While it is difficult to accurately deduce what is being learned by any network, the fact that the net couldn't even match the edges of the output suggests this perceptive field may have been present, as such an observation is indeed consistent with this pattern.
+Our first approach was to try and pass in the texture directly to the network. This would validate whether the network could learn to "wrap" the texture around the geometry. If it could easily learn the homographic transformation of a flat plane to the rotated plane, then we could use this method combined with information about the geometry to automatically apply the texture. Unfortunately the problem of learning geometric transformations with neural nets is quite difficult. The central issue in this task arises in the size of the perceptive field of each neuron. Consider a simple translation. If a pixel is to be translated $$n$$ pixels from it's input position to it's output position. This thus implies that the perceptive field of the final pixel must contain pixels at least $$n$$ pixels away. More generally, any translation mapping a pixel in the input to a pixel $$m$$ pixels away requires the perceptive field of the final pixel to be at least $$m$$. Perceptive field increases with depth of the neural network. Often, the perceptive field of hidden units does not become large enough to even possibly learn such transformation until very deep layers, reducing the net's ability to learn robust homomorphic mappings. Attempts to embed the structure of geometric transformation, such as transformation matrices, in which the parameters of these structures are learned have demonstrated success. cite As our initial model did not contain any such elements, the model was unable to learn the desired transformations. While it is difficult to accurately deduce what is being learned by any network, the fact that the net couldn't even match the edges of the output suggests this perceptive field may have been present, as such an observation is indeed consistent with this pattern.
 <!--TODO  add image here -->
 ### Rotating Plane with Texture Cue
 We switched gears, and instead tried to preserve the geometry but provide a sort of texture cue. This would be the first building block towards making an interface where a user could draw on the texture using a paintbrush, and then have the network infer that the texture should extrapolate to the rest of the object. Our first test was to insert a circular cue at the center of the image. 
@@ -53,7 +53,7 @@ This results in a loss formulation where the discriminator attempts to minimize 
 ### Multiple Rotations and Texture cues
 In an attempt to more robustly learn general rotation and textures, we trained Pix2Pix by producing a dataset of planes randomly rotated in space, with the red channel representing depth via intensity that varies with depth. We additionally apply a random mask to the planes over which we apply a cue of our goal texture. We then provide rotated planes with the same texture applied as ground truth images.  In this framework, we are conditioning the output of our generator on the geometry of the plane and the texture cue we apply to the plane, both parameterized by the input image. We then attempt to make the output of the model resemble planes rotated to the same orientation with the same texture. See below for an examples of triples of input, output, and ground truth images 
 
-Before adding this modification, our network did not generalize well to random texture cues, as you can see in the following images:
+Before adding this modification, our network did not generalize well to random texture cues, as you can see in the following images:  
 ![enter image description here](https://lh3.googleusercontent.com/oU6061mw2SXoqGCkjhvqIxMqVt-HkblDnh9uN1az_IwyVRyDhYQyUGvufHTgR4wxOcWTLeH74mc)
 
 ![enter image description here](https://lh3.googleusercontent.com/DId8NQVNivKPjJgPOXFEcdSRl7p5Zoul3lUVvcjTgTVFuY-KQFcUCfTJL7KzuShdwJS7NM2yvq8)
@@ -69,7 +69,7 @@ For the texture cue approach, the pix2pix method was able to extrapolate the tex
 
 ![](https://i.imgur.com/mAVi9Te.png)
 
-![](https://i.imgur.com/4NsujnQ.png)
+![](https://i.imgur.com/4NsujnQ.png)  
 We then created a web app that allows users to draw on their own texture cues and see how the network performs. You can see a demo of that in [our video]([https://youtu.be/kciq8ffR-4Y](https://youtu.be/kciq8ffR-4Y)).
 
   
@@ -115,13 +115,12 @@ With this, we'd like to continue to build towards the goal of generalizing towar
 * Built webapp
 
 **Gabriel Gardner**:
-* Built PyOpenGL renderer 
-* rained and debugged L2 loss model
+* Built basic PyOpenGL renderer 
+* ran and debugged L2 loss model
 
 **Stefan Palombo**: 
 * Built plane data sets using PyOpenGL
 * Trained and debugged Pix2Pix model
-* Implemented metrics 
 
 
 ## Appendix
